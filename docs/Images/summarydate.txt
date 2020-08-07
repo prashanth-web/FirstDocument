@@ -1,0 +1,7 @@
+<------InEditSummaryFiles.js----->
+
+In $scope.save function
+
+In  FileInfo[i]  Add below line 
+
+ApprovedToPack: $scope.EditSummaryRecord.FileInfo[i].ApprovedToPack ? $scope.EditSummaryRecord.FileInfo[i].ApprovedToPack : $('#ApprovedToPack' + i).val(),

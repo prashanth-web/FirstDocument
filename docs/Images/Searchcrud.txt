@@ -1,0 +1,14 @@
+   $scope.SearchEmp = function () {
+                var obj = {
+                    EmpId: $scope.empId,
+                    EmpName : $scope.empName,
+                    Salary: $scope.empSalary,
+                    Department:$scope.empDepartment
+                }
+                $http.post('api/Employees/Search/', obj).then(function (respon) {
+                  $scope.Employee = respon.data
+                },
+                    function () {
+                        alert("failed to update")
+                    });
+            }

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css"> -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/buble.css">
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+</head>
+<body>
+    <!-- <nav>
+        <a href="#/readme?id=qcc-management">QCC Management</a>
+        <a href="#/readme?id=JIT Management">JIT Management</a>
+        <a href="#/readme?id=files">Files</a>
+      </nav> -->
+  <div id="app">
+    nav>
+    <a href="#/readme?id=qcc-management">QCC Management</a>
+    <a href="#/readme?id=JIT Management">JIT Management</a>
+    <a href="#/readme?id=files">Files</a>
+  </nav>
+    <div>
+      <table class="subheader table-condensed" width="100%" style="margin:1px;font-size:10px" id="subheader_tab">
+          <tr style="border:1px solid black">
+              <td class="col-md-2" align="center" style="border:1px solid black;background-color:rgb(92,177,227)"><a href="#/JIT_" style="color:rgb(38,63,106)"><u>JIT OC Overview</u></a></td>
+              <td class="col-md-2" align="center" style="border:1px solid black;"><a href="#/JIT_O" style="color:rgb(38,63,106)"><u>JIT Item Fulfillment</u></a></td>
+              <td class="col-md-2" align="center" style="border:1px solid black"><a href="#/JIT_F" style="color:rgb(38,63,106)"><u>JIT Facility Fulfillment</u></a></td>
+              <td class="col-md-2" align="center" style="border:1px solid black"><a href="#/JIT_FOB" style="color:rgb(38,63,106)"><u>JIT FOB</u></a></td>
+              <!--<td class="col-md-2" align="center" style="border:1px solid black"><a href="#/JIT_D" style="color:rgb(38,63,106)"><u>JIT Dispatched</u></a></td>-->
+              <td class="col-md-2" align="center" style="border:1px solid black"><a href="#/JIT_Report" style="color:rgb(38,63,106)"><u>JIT Reporting</u></a></td>
+</table>
+
+      <h4><label>JIT OC Overview</label></h4>
+
+      <div class="row">
+          <div class="col-md-8">
+              <form name="CountryForm" id="CountryForm">
+                  <table width="100%" style="background-color:#e8e8e8">
+                      <tr style="background-color:grey;color:white">
+                          <td colspan="7">
+                              <label>Search Criteria</label>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <label>From Date:</label>
+                          </td>
+                          <td>
+                              <div class="input-group">
+                                  <input type="text" id="fromDate" ng-model="fromDate" ng-disabled="true" size="15">
+                                  <span><button type="button" id="btnPicker1" custom-calendar><span class="glyphicon glyphicon-calendar"></span></button></span>
+                              </div>
+                          </td>
+
+                          <td>
+                              <label>To Date:</label>
+                          </td>
+                          <td>
+                              <div class="input-group">
+                                  <input type="text" id="toDate" ng-model="toDate" ng-disabled="true" size="15">
+                                  <span><button type="button" id="btnPicker2" custom-calendar><span class="glyphicon glyphicon-calendar"></span></button></span>
+
+                              </div>
+
+                          </td>
+                          <td><strong>OC&nbsp;Type&nbsp;:</strong></td>
+                          <td>
+                              JIT
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                              <label>Status:</label>
+                          </td>
+                          <td>
+                              <select ng-model="Status" ng-options="st for st in Statuses"><option value="">All</option></select>
+                          </td>
+                          <td>
+                              <label>Facility Function:</label>
+                          </td>
+                          <td>
+                              <select ng-model="locType" ng-options="st.LocTypeName for st in locationTypes">
+                                  <option value="">All</option>
+                              </select>
+                          </td>
+                          <td><strong>Facility&nbsp;Name&nbsp;:</strong></td>
+                          <td>
+                              <select ng-model="loc"
+                                      ng-options="lc.LocName for lc in locations">
+                                  <option value="">All</option>
+                              </select>
+                          </td>
+                      </tr>
+                      
+                      <tr>
+                          <td>
+                              <label> Order #:</label>
+                          </td>
+                          <td>
+                              <input type="text" size="20" id="headerId" placeholder="Order Number" ng-model="HeaderID">
+                          </td>
+                          <td><strong>OC&nbsp;Description&nbsp;:</strong></td>
+                          <td>
+                              <input type="text" ng-model="Descr" placeholder="Description" size="30" />
+                          </td>
+                          <td>
+                              <label> Vendor Name:</label>
+                          </td>
+                          <td>
+                              <input type="text" size="37" id="inputEmail" placeholder="Vendor" ng-model="CommonName" name="CntryName">&nbsp;
+                          </td>
+                          
+                      </tr>
+                      <tr>
+                          <td>
+                              <label> User:</label>
+                          </td>
+                          <td>
+                              <!--<input type="text" size="37" placeholder="Buyer" ng-model="CreatedBy" name="CntryName">&nbsp;-->
+                              <select ng-model="CreatedBy" ng-options="buyers.BuyerName for buyers in Buyers track by buyers.BuyerID">
+                                  <option value="">All Users</option>
+                              </select>
+                          </td>
+                          <td colspan="3">&nbsp;</td>
+                          <td align="center"><input type="submit" value="Search" ng-click="search('POHeaderID')">&nbsp;&nbsp;&nbsp;&nbsp;<!--<input type="button" value="Create On Hand Order" ng-click="create()">--></td>
+                      </tr>
+                      
+                      <tr>
+                          <td colspan="2">&nbsp;</td>
+                      </tr>
+                  </table><br />
+              </form>
+          </div>
+      </div>
+      <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+
+              <div class="table-responsive">
+
+                  <table class="table table-condensed table-striped table-hover" width="100%" id="country">
+
+                      <thead style="background-color:gray;">
+                          <tr style="background-color:gray;border:3px solid white">
+                              <td colspan="17" style="line-height:10px"><label style="color:white">Search Results : {{purchaseOrders.TotalRecords}}</label></td>
+                          </tr>
+                          <tr style="background-color:gray;border:1px solid white">
+                              <td colspan="17">
+                                  <button ng-disabled="purchaseOrders.TotalPages==0 || purchaseOrders.TotalPages == 1 || purchaseOrders == 1" ng-click="Firstpage()">&lt;&lt;</button>
+                                  <button ng-disabled="purchaseOrders.TotalPages==0 || purchaseOrders.TotalPages == 1 || currentpage == 1" ng-click="paging(0)">&lt;</button>
+                                  <label style="color:white">page {{currentpage}} of {{purchaseOrders.TotalPages>0?purchaseOrders.TotalPages:1}}</label>
+                                  <button ng-disabled="purchaseOrders.TotalPages==0 || purchaseOrders.TotalPages == 1 || currentpage == purchaseOrders.TotalPages" ng-click="paging(1,purchaseOrders.TotalPages)">&gt;</button>
+                                  <button ng-disabled="purchaseOrders.TotalPages==0 || purchaseOrders.TotalPages == 1 || currentpage == purchaseOrders.TotalPages" ng-click="Lastpage(purchaseOrders.TotalPages)">&gt;&gt;</button>
+                                  <span ng-if="purchaseOrders.Data && (purchaseOrders.Data.length>0)">&nbsp;<input type="button" value="Export to Excel" ng-click="export()"></span>
+                                  <select ng-change="changeaction()" ng-model="pagesize" ng-options="opt as opt for opt in pagesizes" style="float:right;height:25px"></select>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><a href="" style="color:white" ng-click="sort('PONum')"><strong>File #</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('CmpID')"><strong>Client</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('CmpID')"><strong>Country</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('PODate')"><strong>OC Order Date</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('PODescr')"><strong>OC Description</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('CreatedBy')"><strong>User 1</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('CreatedBy2')"><strong>User 2</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('RequestedDate')"><strong>Requested by Date</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('QuotedShipDate')"><strong>Promised Ship Date</strong></a></td>
+                              <!--<td><a href="" style="color:white" ng-click="sort('POType')"><strong>OC Type</strong></a></td>-->
+                              <td><a href="" style="color:white" ng-click="sort('VendName')"><strong>Vendor</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('LocationType')"><strong>Facility Function</strong></a></td>
+                              <td><a href="" style="color:white" ng-click="sort('Location')"><strong>Facility Name</strong></a></td>
+                              <td align="right"><a href="" style="color:white" ng-click="sort('SubTotal')"><strong>Product Cost</strong></a></td>
+                              <td align="right"><a href="" style="color:white" ng-click="sort('ServiceAmt')"><strong>Service Cost</strong></a></td>
+                              <td align="right"><a href="" style="color:white" ng-click="sort('VendTotalPrice')"><strong>Total Cost</strong></a></td>
+                              <td>&nbsp;&nbsp;<a href="" style="color:white" ng-click="sort('POStatus')"><strong>OC Status</strong></a></td>
+                              <td>&nbsp;&nbsp;<a href="" style="color:white"><strong>Create Record</strong></a></td>
+                              <!--<td align="center" style="color:white"><strong>Edit</strong></td>
+  <td align="center" style="color:white"><strong>Print</strong></td>-->
+
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr ng-repeat="country in purchaseOrders.Data">
+                              <!--<td><a href="" ng-click="gotoproductreview(country)">{{country.PONum}}</a></td>-->
+                              <td><a href="" ng-click="gotosummary(country)">{{country.PONum}}</a></td>
+                              <td>{{country.CmpID.substring(0,2)}}</td>
+                              <td>{{country.CmpID.substring(2)}}</td>
+                              <!--<td>{{country.PODate|date:medium}}</td>-->
+                              <td> <a href="" ng-click="gotoOC(country)">{{country.PODate|date:medium}}</a></td>
+                              <!--<td>{{country.PODescr}}</td>-->
+                              <td><a href="" ng-click="gotoproductreview(country)">{{country.PODescr}}</a></td>
+                              <td>{{country.CreatedBy}}</td>
+                              <td>{{country.CreatedBy2}}</td>
+                              <td>{{country.RequestedDate|date:medium}}</td>
+                              <td>{{country.QuotedShipDate|date:medium}}</td>
+                              <!--<td>{{country.POType}}</td>-->
+                              <td>{{country.VendName}}</td>
+                              <td>{{country.LocationType}}</td>
+                              <td>{{country.Location}}</td>
+                              <td align="right">{{country.SubTotal|number:2}}</td>
+                              <td align="right">{{country.ServiceAmt|number:2}}</td>
+                              <td align="right">{{country.VendTotalPrice|number:2}}</td>
+                              <td>&nbsp;&nbsp;{{country.POStatus}}</td>
+                              <td align="center"><a href="" ng-click="gotoCreateRecord(country)"><span class="glyphicon glyphicon-plus"></span></a></td>
+                              <!--<td align="center"><a href="" ng-click="edit(country.POHeaderID)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+  <td align="center"><a href="" ng-click="print(country.POHeaderID)"><span class="glyphicon glyphicon-print"></span></a></td>-->
+                          </tr>
+                          <tr ng-if="purchaseOrders.Data.length==0">
+                              <td colspan="13" align="center"><strong>No Records Found</strong></td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+
+          </div>
+      </div>
+  </div>
+  </div>
+  <script>
+    window.$docsify = {
+      name: '',
+      repo: ''
+    }
+//     window.$docsify = {
+//     loadNavbar: true
+//   }
+  window.$docsify = {
+  themeColor: '#3F51B5',
+}
+ window.$docsify = {
+  // load from _navbar.md
+   loadNavbar: true,
+
+   // load from nav.md
+    loadNavbar: '_navbar.md',
+ };
+//window.$docsify = {
+  // load from _sidebar.md
+  l//oadSidebar: true,
+
+  // load from summary.md
+//   loadSidebar: '_sidebar.md',
+//}
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<----PSLCTrl.js---->
+
+In $scope.SaveChangesOrders Add the following lines
+
+  if ($scope.OrderDivLines[j].Weight && $scope.OrderDivLines[j].Length && $scope.OrderDivLines[j].Width && $scope.OrderDivLines[j].Height) {
+                        reqArray[j] = {
+                            // var obj = {
+
+                            OrdLineID: $scope.OrderDivLines[j].OrdLineID,
+                            OrdDivID: $scope.DivID,
+                            LineOrder: $scope.OrderDivLines[j].LineOrder,
+                            Description: $scope.OrderDivLines[j].Description,
+                            Qty: $scope.OrderDivLines[j].Qty,
+                            CliUnitPrice: $scope.OrderDivLines[j].CliUnitPrice,
+                            CliTotalPrice: $scope.OrderDivLines[j].CliTotalPrice,
+                            VendUnitPriceUSD: $scope.OrderDivLines[j].VendUnitPriceUSD,
+                            VendTotalPrice: $scope.OrderDivLines[j].VendTotalPrice,
+                            VendorName: VendorName,
+                            Margin: margin,
+                            Notes: $scope.OrderDivLines[j].Notes,
+                            chgEmID: $rootScope.chgEmID,
+                            chgLog: $scope.chgLog,
+                            chgType: "MOD",
+                            ProductInfo: $scope.OrderDivLines[j].ProductInfo,
+                            VendCurr: $scope.OrderDivLines[j].defaultCurrency.Currency,
+                            VendUnitPrice: Math.round($scope.OrderDivLines[j].VendUnitPrice * 100) / 100,
+                            RateOfEx: $scope.OrderDivLines[j].RateOfEx,
+                            IsDelete: $scope.OrderDivLines[j].checked,
+                            ManufactureID: $scope.OrderDivLines[j].ManufactureID,
+                            ECCN: $scope.OrderDivLines[j].ECCN,
+                            SCH: $scope.OrderDivLines[j].SCH,
+                            COO: $scope.OrderDivLines[j].COO,
+                            HTS: $scope.OrderDivLines[j].HTS,
+                            Weight: $scope.OrderDivLines[j].Weight,
+                            Length: $scope.OrderDivLines[j].Length,
+                            Width: $scope.OrderDivLines[j].Width,
+                            Height: $scope.OrderDivLines[j].Height,
+                            Volume: $scope.OrderDivLines[j].Volume,
+                            UOM: $scope.OrderDivLines[j].UOM,
+                            UOW: $scope.OrderDivLines[j].UOW,
+                            UnitQty: $scope.OrderDivLines[j].UnitQty,
+                            Tier2ID: Tier2ID,
+
+
+                        }
+                    }
+                    else {
+                        showpageloading(false);
+                        alert("Please enter Weight & Length & Width & Height");
+                        return
+                    }
+
+
+In  $scope.AddItems Add the following lines
+
+  $scope.AddItems = function (validForm) {
+        if (validForm) {
+            alert("Please enter the Description......");
+        } else {
+            if ($scope.validateCurrency == true) {
+                alert("Rate Of Exchange must be 1 for USD");
+            }
+            else if ($scope.EditOrdLine.Weight && $scope.EditOrdLine.Length && $scope.EditOrdLine.Width && $scope.EditOrdLine.Height) {
+                showpageloading(true);
+                $scope.ProductSpectForm.$setDirty();
+                $scope.ProductSpectForm.$setTouched;
+
+                $scope.Id = OrdDivID.slice(0, -1);
+                $scope.OrdID = OrdDivID.slice(0, -2);
+                if ($scope.Partial2.Partial) {
+                    $scope.Id1 = $scope.Id + $scope.Partial2.Partial;
+                } else {
+                    $scope.Id1 = $scope.Id + $scope.Partial2;
+                }
+                if ($scope.EditOrdLine.Margin)
+                    $scope.EditOrdLine.Margin = Math.round($scope.EditOrdLine.Margin * 10) / 10;
+
+                var ItemAdd = {
+                    OrdDivID: $scope.Id1,
+                    Description: $scope.EditOrdLine.Description,
+                    Qty: $scope.EditOrdLine.Qty,
+                    CliUnitPrice: $scope.EditOrdLine.CliUnitPrice,
+                    CliTotalPrice: $scope.EditOrdLine.CliTotalPrice,
+                    VendUnitPriceUSD: $scope.EditOrdLine.VendUnitPriceUSD,
+                    VendTotalPrice: $scope.EditOrdLine.VendTotalPrice,
+                    //VendorName: $scope.defvendName.VendorID,
+                    VendorName: $scope.venID == "0" || $scope.venID == null ? "V-000000" : $scope.venID,
+                    Margin: $scope.EditOrdLine.Margin,
+                    Notes: $scope.EditOrdLine.Notes,
+                    chgEmID: $rootScope.chgEmID,
+                    chgLog: $scope.chgLog,
+                    chgType: "ADD",
+                    ProductInfo: $scope.EditOrdLine.ProductInfo,
+                    VendCurr: $scope.EditOrdLine.VendCurr.Currency,
+                    RateOfEx: $scope.EditOrdLine.RateOfEx,
+                    VendUnitPrice: Math.round($scope.EditOrdLine.VendUnitPrice * 100) / 100,
+                    ManufactureID: $scope.EditOrdLine.ManufactureID,
+                    ECCN: $scope.EditOrdLine.ECCN,
+                    SCH: $scope.EditOrdLine.SCH,
+                    COO: $scope.EditOrdLine.COO,
+                    HTS: $scope.EditOrdLine.HTS,
+                    Weight: $scope.EditOrdLine.Weight,
+                    Length: $scope.EditOrdLine.Length,
+                    Width: $scope.EditOrdLine.Width,
+                    Height: $scope.EditOrdLine.Height,
+                    Volume: $scope.EditOrdLine.Volume,
+                    UOM: $scope.EditOrdLine.UOM,
+                    UOW: $scope.EditOrdLine.UOW,
+                    UnitQty: $scope.EditOrdLine.UnitQty,
+                    Tier2ID: $scope.Tier2ID
+                };
+                var promiseAddItems = FilesCRUDService.AddItems($scope.OrdID, ItemAdd);
+                promiseAddItems.then(function (res) {
+                    $scope.notification.status = 'show';
+                    $scope.notification.message1 = '';
+                    $scope.notification.message = 'Item Added Successfully!';
+                    $scope.notification.type = 'info';
+                    showpageloading(false);
+                    $("#selUser-1").val(null).trigger("change");
+                    $("#selvendTierUser-1").val(null).trigger("change");
+
+
+                    if (res.data != null) {
+                        $scope.returnObj = res.data;
+                        if (!$scope.returnObj.defaultCurrency) {
+                            $scope.returnObj.defaultCurrency = {};
+                        }
+                        if (!$scope.returnObj.defaultPartial) {
+                            $scope.returnObj.defaultPartial = {};
+                        }
+
+                        $scope.returnObj.defaultCurrency.Currency = $scope.returnObj.VendCurr;
+                        $scope.returnObj.defaultPartial.Partial = $scope.returnObj.OrdDivID.split('-')[2];
+
+                        $scope.OrderDivLines.push($scope.returnObj);
+                        for (var j = 0; j < $scope.OrderDivLines.length; j++) {
+                            $scope.ClientPrice = parseFloat($scope.ClientPrice) + parseFloat($scope.OrderDivLines[j].CliTotalPrice);
+                            $scope.VendorPrice = parseFloat($scope.VendorPrice) + parseFloat($scope.OrderDivLines[j].VendTotalPrice);
+                            if ($scope.OrderDivLines[j].Weight)
+
+                                if ($scope.OrderDivLines[j].UOW == 'KG') {
+                                    $scope.OrderDivLines.total.Weight = $scope.OrderDivLines.total.Weight + (parseFloat($scope.OrderDivLines[j].Weight) * parseFloat($scope.OrderDivLines[j].Qty));
+                                }
+                                else {
+                                    $scope.OrderDivLines.total.Weight = $scope.OrderDivLines.total.Weight + (parseFloat($scope.OrderDivLines[j].Weight) * parseFloat($scope.OrderDivLines[j].Qty)) * 0.4536;
+                                }
+
+                            else
+                                $scope.OrderDivLines.total.Weight = $scope.OrderDivLines.total.Weight + 0;
+                            if ($scope.OrderDivLines[j].Volume) {
+                                $scope.OrderDivLines.total.Volume = $scope.OrderDivLines.total.Volume + (parseFloat($scope.OrderDivLines[j].Volume) * parseFloat($scope.OrderDivLines[j].Qty));
+                            }
+                            else
+                                $scope.OrderDivLines.total.Volume = $scope.OrderDivLines.total.Volume + 0;
+
+                            if ($scope.OrderDivLines[j].VendorName == 'V-000000' || !$scope.OrderDivLines[j].VendorName)
+                                $scope.OrderDivLines[j].changeColor = 'noSelectionColor';
+                            else
+                                $scope.OrderDivLines[j].changeColor = 'SelectionColor';
+
+                            $scope.OrderDivLines[j].LineOrder = j + 1;
+                        }
+                        $scope.wtLB = $scope.OrderDivLines.total.Weight / 0.4536;
+                        $scope.OrderDivLines.PSmarginTotal = parseFloat($scope.ClientPrice - $scope.VendorPrice) / $scope.ClientPrice * 100;
+                        $scope.ClientPrice = 0;
+                        $scope.VendorPrice = 0;
+                        $scope.EditOrdLine.Description = '';
+                        $scope.EditOrdLine.Qty = 0;
+                        $scope.EditOrdLine.CliUnitPrice = 0;
+                        $scope.EditOrdLine.CliTotalPrice = 0
+                        $scope.EditOrdLine.VendUnitPriceUSD = 0;
+                        $scope.EditOrdLine.VendTotalPrice = 0
+                        $scope.EditOrdLine.Margin = 0
+                        $scope.EditOrdLine.Notes = '';
+                        $scope.EditOrdLine.ProductInfo = '';
+                        $scope.EditOrdLine.VendCurr = { Currency: 'USD' };
+                        $scope.EditOrdLine.RateOfEx = 1;
+                        $scope.EditOrdLine.VendUnitPrice = 0;
+                        $scope.EditOrdLine.ManufactureID = '';
+                        $scope.EditOrdLine.ECCN = '';
+                        $scope.EditOrdLine.SCH = '';
+                        $scope.EditOrdLine.COO = '';
+                        $scope.EditOrdLine.HTS = '';
+                        $scope.EditOrdLine.Weight = 0;
+                        $scope.EditOrdLine.Length = 0;
+                        $scope.EditOrdLine.Width = 0;
+                        $scope.EditOrdLine.Height = 0;
+                        $scope.EditOrdLine.Volume = 0;
+                        $scope.EditOrdLine.UOM = 'Inch';
+                        $scope.EditOrdLine.UOW = 'LBS';
+                        $scope.EditOrdLine.UnitQty = 0;
+                        $scope.ProductTier = { Tier: "-None---None-", Tier2ID: 323 };
+                    } else {
+                        loadOrdLines();
+                    }
+                    //loadOrdLines();
+                    //defaultValues();
+                },
+                    function (errorp1) {
+                        $scope.error = 'fail to Add a record', errorp1;
+                        showpageloading(false);
+                    });
+            }
+            else {
+                alert("Please enter Weight & Length & Width & Height");
+            }
+
+        }
+    }
+
+
+In JitOC.html
+
+<td>
+       <label> Buyer:</label>
+        </td>
+           <td>
+              <input type="text" size="37" placeholder="Buyer" ng-model="loginbuyer" name="CntryName">&nbsp;
+       </td>
+
+<----JitOC.js---->
+
+ $scope.loginbuyer = $rootScope.chgEmID;
+
+In function loaddata() add the below lines
+
+createdBy: $scope.loginbuyer,
+
+In var searchdata add the below lines
+
+createdBy: $scope.loginbuyer,
+
+<-----In jitonorderdashboard.html----->
+
+ <tr>
+                            <td><label>Buyer:</label></td>
+                            <td>
+                                <input type="text" ng-model="loginbuyer" placeholder="Enter Buyer" />
+                            </td>
+                        </tr>
+
+<-----OnOrderDashboard.js----->(JIt On Orders)
+
+createdBy: $scope.loginbuyer,
+
+In function loaddata() add the below line
+ CreatedBy: $scope.loginbuyer,
+
+In var searchdata add the below line 
+ CreatedBy: $scope.loginbuyer,
+
+<---------In Receivercontroller.cs------->
+
+In Create ticket method add below line
+header.RcvNumber = "T-" + tktIndex + "-" + head.POType + "-" + NextBase2;
+
+In Create jitticket method add below line
+header.RcvNumber = "R-" + tktIndex + "-JIT-" + NextBase2;
+

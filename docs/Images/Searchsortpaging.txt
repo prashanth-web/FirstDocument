@@ -1,0 +1,452 @@
+<-----------Html and service page---------->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <script src="Scripts/angular.min.js"></script>
+    <script>
+        var App = angular.module("Ang", [])
+
+        App.controller("EmployeesController", function ($scope, $http) {
+            $scope.Emp = {};
+            $scope.editflag = false;
+            $scope.updateFlag = false;
+            var isSearchPerformed = false;
+            $scope.pagesizes = [5, 10, 15, 20, 25, 50, '*'];
+            $scope.pagesize = $scope.pagesizes[1];
+            if ($scope.pagesize == '*') {
+                $scope.pagesize = 0;
+            }
+            $scope.currentpage = 1;
+
+
+            GetAll();
+            function GetAll() {
+                var EmployeeData = {
+                    EmpId: "",
+                    EmpName:"",
+                    Salary: "",
+                    Department: "",
+                    SortField: '',
+                    SortAsc: true,
+                    PageNo: $scope.currentpage,
+                    Records: $scope.pagesize
+                     }
+                //$http.get('/api/Employees').then(function (response) {
+                //    //alert("success");
+                //    $scope.Employee = response.data
+               
+                $http.post('api/Employees/Search', EmployeeData).then(function (respon) {
+                    $scope.Employee = respon.data;
+                },
+                    function () {
+                        alert("failed to sort")
+                    });
+                    
+            };
+
+            $scope.InsertEmp = function () {
+                //alert(Employee.EmpName)
+                //alert(Employee.Salary)
+                //alert(Employee.Department);
+                //Employee.EmpId = 0;
+                //alert(Employee.EmpId);
+
+                $http.post('api/Employees', $scope.Emp).then(function (resp) {
+                    alert("success");
+
+                    GetAll();
+                },
+                    function () {
+                        alert("failed to insert")
+                    });
+            };
+            $scope.DeleteId = function (id) {
+                $http.delete('api/Employees/' + id).then(function (resp) {
+                    alert("success");
+                    GetAll();
+                },
+                    function () {
+                        alert("failed to delete")
+                    });
+            };
+
+            $scope.EditId = function (id, index) {
+
+                $scope.editflag = true;
+                $scope.editIndex = index;
+                $scope.updateFlag = true;
+
+                console.log($scope.Employee, "$scope.Employee");
+
+            };
+
+            $scope.UpdateId = function (item) {
+
+                var obj = {
+                    EmpId: item.empId,
+                    EmpName: item.empName,
+                    Salary: item.empSalary,
+                    Department: item.empDepartment
+                }
+                var mainObj = obj;
+
+                $http.put('api/Employees', mainObj).then(function (rspn) {
+                    alert("success");
+                    GetAll();
+                },
+                    function () {
+                        alert("failed to update")
+                    });
+            };
+            $scope.SearchEmp = function () {
+                var EmpObj = {
+                    EmpId: $scope.empId,
+                    EmpName: $scope.empName,
+                    Salary: $scope.empSalary,
+                    Department: $scope.empDepartment,
+                   
+                }
+
+                $http.post('api/Employees/Search/', EmpObj).then(function (respo) {
+                    alert("success");
+                    $scope.Employee = respo.data;
+                },
+                    function (errorPl) {
+                        $scope.error = 'failure in data saving', errorPl;
+
+                    })
+            };
+            //Sorting function
+
+            $scope.sort = function (columnName) {
+                $scope.Order = !$scope.Order;
+                if (!columnName)
+                    columnName = "";
+                isSearchPerformed = true;
+                SearchEmployee($scope, true, columnName);
+            }
+            $scope.SearchEmployee = function (columnName) {
+                if (!columnName)
+                    columnName = "";
+                isSearchPerformed = true;
+                SearchEmployee($scope, false, columnName);
+            }
+             $scope.Firstpage = function () {
+                $scope.currentpage = 1;
+                if (!isSearchPerformed) {
+                    SearchEmployee($scope, true);
+                } else {
+                    SearchEmployee($scope, true);
+                }
+            }
+            $scope.Lastpage = function (totalPages) {
+                $scope.currentpage = totalPages;
+ 
+                if (!isSearchPerformed) {
+                    SearchEmployee($scope, true);
+        
+                } else {
+                    SearchEmployee($scope, true);
+                }
+            }
+            $scope.paging = function (type, totalPages) {
+                if (type == 0 && $scope.currentpage > 0) {
+                    --$scope.currentpage;
+                } else if (type == 1 && $scope.currentpage < totalPages) {
+                    ++$scope.currentpage;
+                }
+ 
+                if (!isSearchPerformed) {
+                    SearchEmployee($scope, true);
+
+                } else {
+                    SearchEmployee($scope, true);
+                }
+   
+            }
+
+            $scope.$watchCollection('file', function () {
+                if ($scope.Employee == undefined) return;
+                $scope.currentpage = 1;
+                $scope.pagenumber = Math.ceil($scope.Employee.length / $scope.pagesize);
+            });
+
+            $scope.changeaction = function () {
+                if (!isSearchPerformed) {
+                    SearchEmployee($scope, true); 
+
+                } else {
+                    SearchEmployee($scope, true);
+                }
+            }
+
+            function SearchEmployee($scope, isPaging, colName) {
+                $scope.sortcol = colName;
+                if (!isPaging) {
+                    $scope.currentpage = 1;
+                }
+                var EmployeeData = {
+                    EmpId: $scope.empId,
+                    EmpName: $scope.empName,
+                    Salary: $scope.empSalary,
+                    Department: $scope.empDepartment,
+                    SortField: $scope.sortcol,
+                    SortAsc: $scope.Order,
+                    PageNo: $scope.currentpage,
+                    Records: $scope.pagesize
+                }
+                $http.post('api/Employees/Search', EmployeeData).then(function (respon) {
+                    $scope.Employee = respon.data;
+                },
+                    function () {
+                        alert("failed to sort")
+                    });
+            }
+
+        })
+
+    </script>
+</head>
+
+<body ng-app="Ang" ng-controller="EmployeesController">
+
+    <input type="text" placeholder="ID" ng-model="empId" />
+    <input type="text" placeholder="Name" ng-model="empName" />
+    <input type="text" placeholder="Salary" ng-model="empSalary" />
+    <input type="text" placeholder="Department" ng-model="empDepartment" />
+    <input type="button" ng-click="SearchEmp()" value="Search" />
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <td colspan="6">
+                    <button ng-disabled="Employee.TotalPages==0 || Employee.TotalPages == 1 || currentpage == 1" ng-click="Firstpage()">&lt;&lt;</button>
+                    <button ng-disabled="Employee.TotalPages==0 || Employee.TotalPages == 1 || currentpage == 1" ng-click="paging(0)">&lt;</button>
+                    <label>page {{currentpage}} of {{Employee.TotalPages>0?Employee.TotalPages:1}}</label>
+                    <button ng-disabled="Employee.TotalPages==0 || Employee.TotalPages == 1 || currentpage == Employee.TotalPages" ng-click="paging(1,Employee.TotalPages)">&gt;</button>
+                    <button ng-disabled="Employee.TotalPages==0 || Employee.TotalPages == 1 || currentpage == Employee.TotalPages" ng-click="Lastpage(Employee.TotalPages)">&gt;&gt;</button>
+                    <select ng-change="changeaction()" ng-model="pagesize" ng-options="opt as opt for opt in pagesizes" style="float:right;height:20px"></select>
+                </td>
+            </tr>
+            <tr>
+                <th><a href="" ng-click="sort('EmpId')">ID</a></th>
+                <th><a href="" ng-click="sort('EmpName')">Name</a></th>
+                <th><a href="" ng-click="sort('Salary')">Salary</a></th>
+                <th><a href="" ng-click="sort('Department')">Department</a> </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in Employee.Data">
+
+                <td>{{item.EmpId}}</td>
+                <!--<td><span ng-if="editflag==false">{{item.EmpName}}</span>
+    <span ng-if="editIndex==$index"><input type="text" ng-model="Emp.EmpName" /></span></td>-->
+                <td ng-if="editIndex!=$index">{{item.EmpName}}</td>
+                <td ng-if="editIndex==$index"><input type="text" ng-model="Emp.EmpName" /></td>
+                <td ng-if="editIndex!=$index">{{item.Salary}}</td>
+                <td ng-if="editIndex==$index"><input type="text" ng-model="Emp.Salary" /></td>
+                <td ng-if="editIndex!=$index">{{item.Department}}</td>
+                <td ng-if="editIndex==$index"><input type="text" ng-model="Emp.Department" /></td>
+                <td><input type="button" value="Delete" ng-click="DeleteId(item.EmpId)" /></td>
+                <td ng-if="updateFlag == false"><input type="button" value="Edit" ng-click="EditId(item.EmpId,$index)" /></td>
+                <td><input type="button" value="Update" ng-click="UpdateId(item,$index)">
+            </tr>
+            <tr ng-if="Employee.length == 0">
+                <td> no record found </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+    <!--<input type="text" ng-model="Employee.EmpId" placeholder="Employee ID" />-->
+    <input type="text" ng-model="Emp.EmpName" placeholder="Employee Name" />
+    <input type="text" ng-model="Emp.Salary" placeholder="Salary" />
+    <input type="text" ng-model="Emp.Department" placeholder="Department" />
+    <input type="button" ng-click="InsertEmp()" value="InsertEmployee" />
+
+</body>
+</html>
+
+
+<-------------controllercode---------->
+
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Description;
+using AngularCrud1;
+
+namespace AngularCrud1.Controllers
+{
+    public class EmployeesController : ApiController
+    {
+        private CrudOperationsEntities db = new CrudOperationsEntities();
+       
+
+        // GET: api/Employees
+        public IQueryable<Employee> GetEmployees()
+        {
+            return db.Employees;
+        }
+
+        // GET: api/Employees/5
+        [ResponseType(typeof(Employee))]
+        public IHttpActionResult GetEmployee(int id)
+        {
+            Employee employee = db.Employees.Find(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(employee);
+        }
+
+        // PUT: api/Employees/5
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutEmployee(int id, Employee employee)
+        {
+            // var Id = employee.EmpId;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // db.Entry(employee).State = EntityState.Modified;
+            try
+            {
+                var tempObj = db.Employees.FirstOrDefault(a => a.EmpId == employee.EmpId);
+                if (tempObj != null)
+                {
+                    tempObj.EmpId = employee.EmpId;
+                    tempObj.EmpName = employee.EmpName;
+                    tempObj.Department = employee.Department;
+                    tempObj.Salary = employee.Salary;
+
+                    // db.Employees.Add(tempObj);
+                }
+
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // POST: api/Employees
+        [ResponseType(typeof(Employee))]
+        public IHttpActionResult PostEmployee(Employee employee)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.Employees.Add(employee);
+            db.SaveChanges();
+
+            return CreatedAtRoute("DefaultApi", new { id = employee.EmpId }, employee);
+        }
+
+        // DELETE: api/Employees/5
+        [ResponseType(typeof(Employee))]
+        public IHttpActionResult DeleteEmployee(int id)
+        {
+            Employee employee = db.Employees.Find(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+
+            db.Employees.Remove(employee);
+            db.SaveChanges();
+
+            return Ok(employee);
+        }
+        [Route("api/Employees/Search")]
+        public Result SearchEmployee([FromBody]New_Employee FilterObj)
+        {
+            List<New_Employee> SearchResult = null;
+            Result output = null;
+            var skipIndex = FilterObj.Records * (FilterObj.PageNo - 1);
+            var sortField = (FilterObj.SortField == "" || FilterObj.SortField == null) ? "EmpId" : FilterObj.SortField;
+            var SortAsc = FilterObj.SortAsc;
+
+
+            try
+            {
+                SearchResult = (from E in db.Employees
+                                where
+                                (E.EmpId == (FilterObj.EmpId) || FilterObj.EmpId == 0 || FilterObj.EmpId.ToString() == null) &&
+                                (E.EmpName.Contains(FilterObj.EmpName) || FilterObj.EmpName == "" || FilterObj.EmpName == null) &&
+                                (E.Department.StartsWith(FilterObj.Department) || FilterObj.Department == "" || FilterObj.Department == null)
+                                select new New_Employee
+                                {
+
+                                    EmpId = E.EmpId,
+                                    EmpName = E.EmpName,
+                                    Salary = E.Salary,
+                                    Department = E.Department,
+
+                                }).OrderByField(sortField,SortAsc).ToList();
+                if (FilterObj.Records == 0)
+                {
+                    output = new Result
+                    {
+                        Data = SearchResult,
+                        TotalRecords = SearchResult.Count(),
+                        TotalPages = 1
+                    };
+                }
+                else
+                {
+                    var pages = SearchResult.Count() % FilterObj.Records == 0 ? SearchResult.Count() / FilterObj.Records : (SearchResult.Count() / FilterObj.Records) + 1;
+                    if (FilterObj.PageNo > pages)
+                    {
+                        skipIndex = 0;
+                    }
+                    output = new Result
+                    {
+                        Data = SearchResult.Skip(skipIndex).Take(FilterObj.Records),
+                        TotalRecords = SearchResult.Count(),
+                        TotalPages = pages
+                    };
+                }
+            }
+
+            catch (Exception)
+            {
+            }
+
+            return output;
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private bool EmployeeExists(int id)
+        {
+            return db.Employees.Count(e => e.EmpId == id) > 0;
+        }
+    }
+}

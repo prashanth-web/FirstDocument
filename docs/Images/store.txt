@@ -1,0 +1,119 @@
+ [HttpPost]
+        [Route("api/CustomerLogin/Login")]
+        public IHttpActionResult CustomerLogin(string domain,string identity,string sharedsecret)
+        {
+            
+            
+            var rec = db.customers.Where(a => a.Domain == domain).FirstOrDefault();
+            if(rec.Domain == domain && rec.Identity == identity && rec.SharedSecret == sharedsecret)
+            {
+                db.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+if(userName.value == storedName && userPw.value == storedPw) {
+        alert('You are loged in.');
+    }else {
+        alert('ERROR.');
+    }
+
+// Name and Password from the register-form
+var name = document.getElementById('name');
+var pw = document.getElementById('pw');
+
+// storing input from register-form
+function store() {
+    localStorage.setItem('name', name.value);
+    localStorage.setItem('pw', pw.value);
+}
+
+// check if stored data from register-form is equal to entered data in the   login-form
+function check() {
+
+    // stored data from the register-form
+    var storedName = localStorage.getItem('name');
+    var storedPw = localStorage.getItem('pw');
+
+    // entered data from the login-form
+    var userName = document.getElementById('userName');
+    var userPw = document.getElementById('userPw');
+
+    // check if stored data from register-form is equal to data from login form
+    if(userName.value !== storedName || userPw.value !== storedPw) {
+        alert('ERROR');
+    }else {
+        alert('You are loged in.');
+    }
+}
+[HttpPost]
+        [Route("api/mainLaunchProg")]
+        public string mainLaunchProg()
+        {
+            try
+            {
+                
+                XElement y = new XElement("Response",
+                    new XElement("Status", new XAttribute("Code", X.code), new XAttribute("Text", X.text),
+                    new XElement("PunchOutSetupResponse",
+                    new XElement("StartPage",
+                    new XElement("URL", "http://oms-cxml.azurewebsites.net/client/Client_Home.html#/")
+                    ))));
+                
+
+                XDocument xmlDocument = new XDocument(
+                    new XDeclaration("1.0", "utf-8", null),
+                    new XDocumentType("cXML", null, "http://xml.cxml.org/schemas/cXML/1.2.014/cXML.dtd", null),
+                    new XElement("cXML", new XAttribute(XNamespace.Xml + "lang", "en-US"), new XAttribute("payloadID", "1452186890.009162@ip - 10 - 7 - 14 - 126"), new XAttribute("timestamp", OrdDate), new XAttribute("version", "1.2.014")
+                   
+                    ),
+
+                    new XElement("Request", new XAttribute("deploymentMode", "production"),
+
+
+                    new XElement(y)
+
+                    ));
+
+                var XMLString = xmlDocument.ToString();
+                return XMLString;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+ [HttpPost]
+        [Route("api/mainLaunchProg1")]
+        public string mainLaunchProg1()
+        {
+            try
+            {
+                
+                XElement y = new XElement("Response",
+                    new XElement("Status", new XAttribute("Code", "200"), new XAttribute("Text", "OK")),
+                    new XElement("PunchOutSetupResponse",
+                    new XElement("StartPage",
+                    new XElement("URL", "http://oms-cxml.azurewebsites.net/client/Client_Home.html#/")
+                    )));
+                
+
+                XDocument xmlDocument = new XDocument(
+                    new XDeclaration("1.0", "utf-8", "yes"),
+                    new XDocumentType("cXML", null, "http://xml.cxml.org/schemas/cXML/1.2.014/cXML.dtd", null),
+                    new XElement("cXML", new XAttribute(XNamespace.Xml + "lang", "en-US"), new XAttribute("payloadID", "1452186890.009162@ip - 10 - 7 - 14 - 126"), new XAttribute("timestamp", "24/10"), new XAttribute("version", "1.2.014"),
+
+                    new XElement(y)
+
+                    ));
+
+                var XMLString = xmlDocument.ToString();
+                return XMLString;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
