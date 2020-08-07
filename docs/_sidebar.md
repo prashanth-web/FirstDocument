@@ -57,5 +57,5 @@
 - File Overview
 - Resources
 - Request Quote
-- Lo
+- Logout
 
