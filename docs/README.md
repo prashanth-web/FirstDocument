@@ -1,6 +1,4 @@
-# Headline
-
-> An awesome project.
+# Overview
 
 # Table of Contents
 - Site Map	
