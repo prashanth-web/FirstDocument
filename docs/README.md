@@ -251,7 +251,7 @@ User can also add new shipping company here by clicking on **Create Shipping Tic
 In shipping details table user have to provide details about the product.
 
 ## Clients:
- ![Alt Text](/Images/Screenshot18.png)
+ ![Alt Text](./Images/Screenshot18.png)
 - Initially User will get all the clients.
 - User can search clients based on Abbreviation or company or User Name.
 - User also have pagination for the search results. In pagination the drop down list consists of number of tickets to display per page.
@@ -603,7 +603,7 @@ In On hand external report, user can search items details based on product name,
 Here user can search based on client, country, RSC SKU number, on hand type and product description.
 User can allocate items by just clicking on allocate button.
 
- ![Alt Text](/Images/Screenshot67.png)
+ ![Alt Text](./Images/Screenshot67.png)
 
 # QCC Management:
 
